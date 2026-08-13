@@ -1,17 +1,17 @@
-# Govee LAN Control — интеграция для Home Assistant
+# Govee LAN Control — Home Assistant integration
 
-Кастомная интеграция для управления лампами и лентами Govee **напрямую по локальной сети** (LAN API, UDP), без облака и без API-ключа. Протокол: [официальный гайд Govee](https://app-h5.govee.com/user-manual/wlan-guide).
+A custom integration that controls Govee lamps and LED strips **directly over the local network** (LAN API, UDP) — no cloud, no API key. Protocol: [official Govee guide](https://app-h5.govee.com/user-manual/wlan-guide).
 
-**Возможности:**
-- Включение/выключение, яркость, цвет (RGB), цветовая температура (2000–9000 K)
-- Несколько ламп: каждая лампа добавляется отдельно (автопоиск или по IP)
-- Автоматическое отслеживание смены IP-адреса лампы (по периодическому сканированию)
-- Опрос состояния каждые 10 секунд + мгновенные ответы устройства
+**Features:**
+- On/off, brightness, RGB color, color temperature (2000–9000 K)
+- Multiple lamps: each lamp is added separately (auto-discovery or by IP)
+- Automatic tracking of lamp IP changes (via periodic network scan)
+- Status polling every 10 seconds plus instant push replies from the device
 
-## Структура файлов
+## File structure
 
 ```
-custom_components/govee_lan/   ← это копируем в Home Assistant
+custom_components/govee_lan/   ← goes into Home Assistant
 ├── __init__.py
 ├── config_flow.py
 ├── const.py
@@ -19,72 +19,72 @@ custom_components/govee_lan/   ← это копируем в Home Assistant
 ├── light.py
 ├── manifest.json
 └── translations/ (en, ru)
-tools/govee_scan.py            ← диагностический скрипт (в HA не нужен)
+tools/govee_scan.py            ← standalone diagnostic script (not needed in HA)
 ```
 
-## Шаг 1. Подготовка ламп
+## Step 1. Prepare the lamps
 
-1. Лампа должна **поддерживать LAN API**. Список поддерживаемых моделей — в конце [гайда Govee](https://app-h5.govee.com/user-manual/wlan-guide) (H6159, H619A/B/C/E, H615A–E, H6072, H6046 и многие другие).
-2. Подключите лампу к Wi-Fi **2.4 ГГц** через приложение Govee Home.
-3. В приложении Govee Home откройте устройство → шестерёнка (настройки) → включите **«LAN Control»** (Управление по локальной сети). Если пункта нет — обновите прошивку устройства и приложение; если всё равно нет, модель не поддерживает LAN API.
-4. **Рекомендуется** закрепить за лампой постоянный IP (DHCP reservation в настройках роутера). Интеграция умеет отслеживать смену IP, но с фиксированным адресом всё надёжнее.
+1. The lamp must **support the LAN API**. The list of supported models is at the end of the [Govee guide](https://app-h5.govee.com/user-manual/wlan-guide) (H6159, H619A/B/C/E, H615A–E, H6072, H6046 and many others).
+2. Connect the lamp to a **2.4 GHz** Wi-Fi network using the Govee Home app.
+3. In the Govee Home app open the device → gear icon (settings) → enable **LAN Control**. If the option is missing, update the device firmware and the app; if it is still missing, the model does not support the LAN API.
+4. **Recommended:** give the lamp a permanent IP address (DHCP reservation in your router). The integration can follow IP changes, but a fixed address is more reliable.
 
-## Шаг 2. Установка интеграции
+## Step 2. Install the integration
 
-### Вариант А: через HACS (рекомендуется — обновления в один клик)
+### Option A: via HACS (recommended — one-click updates)
 
-1. HACS → меню (⋮) → **Custom repositories**.
-2. Вставьте `https://github.com/dekamaru/ha_govee_lan_control`, тип — **Integration**, нажмите Add.
-3. Найдите «Govee LAN Control» в HACS и нажмите **Download**.
-4. Перезапустите Home Assistant.
+1. HACS → menu (⋮) → **Custom repositories**.
+2. Paste `https://github.com/dekamaru/ha_govee_lan_control`, category **Integration**, click Add.
+3. Find "Govee LAN Control" in HACS and click **Download**.
+4. Restart Home Assistant.
 
-### Вариант Б: вручную
+### Option B: manual
 
-1. Скопируйте папку `custom_components/govee_lan` в каталог конфигурации Home Assistant, чтобы получилось:
+1. Copy the `custom_components/govee_lan` folder into your Home Assistant configuration directory so that you end up with:
    ```
    <config>/custom_components/govee_lan/manifest.json
    ```
-   Где `<config>` — папка, в которой лежит `configuration.yaml` (в Home Assistant OS это `/config`; удобно копировать через аддоны Samba или File editor).
-2. Перезапустите Home Assistant.
+   `<config>` is the folder that contains `configuration.yaml` (`/config` on Home Assistant OS; the Samba or File editor add-ons make copying easy).
+2. Restart Home Assistant.
 
-## Шаг 3. Добавление ламп
+## Step 3. Add the lamps
 
-1. **Настройки → Устройства и службы → Добавить интеграцию** → найдите **«Govee LAN Control»**.
-2. Выберите способ:
-   - **Найти устройства автоматически** — интеграция рассылает multicast-запрос и показывает найденные лампы. Выберите одну из списка.
-   - **Добавить устройство по IP-адресу** — введите IP лампы (видно в роутере или в приложении Govee Home → настройки устройства). Интеграция проверит, что устройство отвечает.
-3. **Повторите для каждой лампы** — одна запись интеграции = одна лампа. Уже добавленные лампы в списке автопоиска не показываются.
+1. **Settings → Devices & Services → Add Integration** → search for **"Govee LAN Control"**.
+2. Pick a method:
+   - **Discover devices automatically** — the integration sends a multicast scan and lists the lamps it finds. Pick one from the list.
+   - **Add device by IP address** — enter the lamp's IP (visible in your router or in the Govee Home app → device settings). The integration verifies that the device responds.
+3. **Repeat for each lamp** — one config entry = one lamp. Already-configured lamps are hidden from the discovery list.
 
-После добавления у каждой лампы появится сущность `light.*` — с яркостью, RGB и цветовой температурой. Дальше как обычно: карточки, автоматизации, сцены.
+Each lamp appears as a `light.*` entity with brightness, RGB and color temperature — use it in cards, automations and scenes as usual.
 
-## Диагностика
+## Diagnostics
 
-Если лампа не находится или не отвечает, запустите тест с любого компьютера в той же сети (нужен только Python 3.10+):
+If a lamp is not discovered or does not respond, run the test script from any computer on the same network (requires only Python 3.10+):
 
 ```bash
 python tools/govee_scan.py
 ```
 
-Скрипт покажет все лампы с включённым LAN Control (IP, модель, ID). Проверить управление конкретной лампой:
+The script lists every lamp with LAN Control enabled (IP, model, ID). To test controlling a specific lamp:
 
 ```bash
 python tools/govee_scan.py --ip 192.168.1.50 --on --color 255 0 0 --brightness 50
 ```
 
-### Частые проблемы
+### Troubleshooting
 
-| Симптом | Причина / решение |
+| Symptom | Cause / fix |
 |---|---|
-| Автопоиск ничего не находит | LAN Control не включён; лампа и HA в разных VLAN/подсетях; роутер режет multicast (IGMP snooping). Решение: добавьте лампу **по IP** — это работает без multicast. |
-| Ошибка «порт 4002 занят» | Конфликт со встроенной интеграцией **«Govee lights local»** (или другим ПО с Govee LAN, например SignalRGB на той же машине). Устройства Govee всегда отвечают на порт 4002, поэтому его может слушать только одна программа. Удалите записи встроенной интеграции. |
-| Лампа периодически «недоступна» | Слабый Wi-Fi сигнал у лампы; либо IP сменился — проверьте, закреплён ли адрес в роутере. |
-| Устройство добавлено по IP, но не отвечает | Проверьте, что фаервол не блокирует UDP-порты 4001–4003, и что HA и лампа в одной подсети. |
+| Auto-discovery finds nothing | LAN Control is not enabled; the lamp and HA are on different VLANs/subnets; the router filters multicast (IGMP snooping). Fix: add the lamp **by IP** — that path does not need multicast. |
+| "UDP port 4002 is in use" error | Conflict with the built-in **"Govee lights local"** integration (or other Govee LAN software on the same machine, e.g. SignalRGB). Govee devices always reply to port 4002, so only one program can listen on it. Remove the built-in integration's entries. |
+| Lamp goes "unavailable" from time to time | Weak Wi-Fi signal at the lamp, or its IP changed — check that the address is reserved in the router. |
+| Device added by IP but does not respond | Check that no firewall blocks UDP ports 4001–4003 and that HA and the lamp are on the same subnet. |
 
-### Ограничения
+### Limitations
 
-- Сцены/эффекты из приложения Govee по LAN API не поддерживаются (только вкл/выкл, яркость, цвет, температура).
-- Сегментная подсветка (разные цвета на участках ленты) через публичный LAN API недоступна.
+- Scenes/effects from the Govee app are not available through the LAN API (only on/off, brightness, color, color temperature).
+- Segment control (different colors on parts of a strip) is not exposed by the public LAN API.
 
-## Совместимость
+## Compatibility
 
-Требуется Home Assistant 2024.1 или новее. Зависимостей нет — используется только стандартная библиотека Python.
+Requires Home Assistant 2024.1 or newer. No dependencies — Python standard library only.
