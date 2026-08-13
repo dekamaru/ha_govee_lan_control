@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Govee LAN Control",
+        "description": "Add a Govee lamp. LAN Control must be enabled for the device in the Govee Home app (device settings).",
+        "menu_options": {
+          "discover": "Discover devices automatically",
+          "manual": "Add device by IP address"
+        }
+      },
+      "discover": {
+        "title": "Discovered Govee devices",
+        "description": "Select the device to add. Run the flow again to add more lamps.",
+        "data": {
+          "device": "Device"
+        }
+      },
+      "manual": {
+        "title": "Add Govee device by IP",
+        "description": "Enter the lamp's IP address. Make sure LAN Control is enabled in the Govee Home app and the lamp is on the same network as Home Assistant.",
+        "data": {
+          "ip_address": "IP address",
+          "name": "Name (optional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The device did not respond. Check the IP address, make sure LAN Control is enabled in the Govee Home app, and that UDP ports 4001-4003 are not blocked."
+    },
+    "abort": {
+      "already_configured": "This device is already configured. Its IP address has been updated.",
+      "no_devices_found": "No new Govee devices found. Make sure LAN Control is enabled and the lamps are on the same network, or add the device by IP address.",
+      "port_in_use": "UDP port 4002 is in use by another integration (for example the built-in Govee lights local integration). Remove it or its devices first."
+    }
+  }
+}

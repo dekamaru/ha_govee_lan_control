@@ -1,0 +1,12 @@
+{
+  "domain": "govee_lan",
+  "name": "Govee LAN Control",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/dekamaru/ha_govee_lan_control",
+  "issue_tracker": "https://github.com/dekamaru/ha_govee_lan_control/issues",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "version": "1.0.0"
+}
