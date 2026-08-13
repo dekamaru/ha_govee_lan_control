@@ -8,20 +8,6 @@ A custom integration that controls Govee lamps and LED strips **directly over th
 - Automatic tracking of lamp IP changes (via periodic network scan)
 - Status polling every 10 seconds plus instant push replies from the device
 
-## File structure
-
-```
-custom_components/govee_lan/   ← goes into Home Assistant
-├── __init__.py
-├── config_flow.py
-├── const.py
-├── controller.py
-├── light.py
-├── manifest.json
-└── translations/ (en, ru)
-tools/govee_scan.py            ← standalone diagnostic script (not needed in HA)
-```
-
 ## Step 1. Prepare the lamps
 
 1. The lamp must **support the LAN API**. The list of supported models is at the end of the [Govee guide](https://app-h5.govee.com/user-manual/wlan-guide) (H6159, H619A/B/C/E, H615A–E, H6072, H6046 and many others).
