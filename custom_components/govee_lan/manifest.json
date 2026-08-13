@@ -1,7 +1,7 @@
 {
   "domain": "govee_lan",
   "name": "Govee LAN Control",
-  "codeowners": [],
+  "codeowners": ["@dekamaru"],
   "config_flow": true,
   "documentation": "https://github.com/dekamaru/ha_govee_lan_control",
   "issue_tracker": "https://github.com/dekamaru/ha_govee_lan_control/issues",
